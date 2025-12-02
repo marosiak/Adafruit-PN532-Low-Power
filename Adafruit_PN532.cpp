@@ -1830,7 +1830,12 @@ void Adafruit_PN532::setI2CWakeupPin(int8_t pin) {
 }
 
 bool Adafruit_PN532::shutDown(void) {
+  if (!turnOffRF()) {
+    return false;
+  }
+
   pn532_packetbuffer[0] = PN532_COMMAND_POWERDOWN;
+
   pn532_packetbuffer[1] = 0xB0;
   pn532_packetbuffer[2] = 0x00;
 
@@ -1838,4 +1843,12 @@ bool Adafruit_PN532::shutDown(void) {
     return false;
 
   return true;
+}
+
+bool Adafruit_PN532::turnOffRF() {
+  pn532_packetbuffer[0] = PN532_COMMAND_RFCONFIGURATION;
+  pn532_packetbuffer[1] = 0x01; // Config item 1 (RF Field)
+  pn532_packetbuffer[2] = 0x00; // 0x00 = Field OFF, 0x01 = Field ON
+
+  return sendCommandCheckAck(pn532_packetbuffer, 3);
 }
