@@ -148,6 +148,9 @@ public:
   Adafruit_PN532(uint8_t reset, HardwareSerial *theSer); // Hardware UART
   bool begin(void);
 
+    void setI2CWakeupPin(int8_t pin);
+    bool shutDown(void);
+
   void reset(void);
   void wakeup(void);
 
@@ -201,6 +204,7 @@ public:
 
 private:
   int8_t _irq = -1, _reset = -1, _cs = -1;
+  int8_t _req = -1;
   int8_t _uid[7];      // ISO14443A uid
   int8_t _uidLen;      // uid len
   int8_t _key[6];      // Mifare Classic key

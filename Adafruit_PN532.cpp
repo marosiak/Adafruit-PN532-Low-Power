@@ -1818,3 +1818,41 @@ void Adafruit_PN532::writecommand(uint8_t *cmd, uint8_t cmdlen) {
     }
   }
 }
+
+void Adafruit_PN532::wakeup(void) {
+  if (_req != -1) {
+    digitalWrite(_req, LOW);
+    delay(10);
+    digitalWrite(_req, HIGH);
+    delay(10);
+  }
+
+  if (spi_dev) {
+    digitalWrite(_cs, LOW);
+    delay(2);
+  } else if (ser_dev) {
+    uint8_t w[3] = {0x55, 0x00, 0x00};
+    ser_dev->write(w, 3);
+    delay(2);
+  }
+
+  SAMConfig();
+}
+
+
+void Adafruit_PN532::setI2CWakeupPin(int8_t pin) {
+  _req = pin;
+  pinMode(_req, OUTPUT);
+  digitalWrite(_req, HIGH);
+}
+
+bool Adafruit_PN532::shutDown(void) {
+  pn532_packetbuffer[0] = PN532_COMMAND_POWERDOWN;
+  pn532_packetbuffer[1] = 0xB0;
+  pn532_packetbuffer[2] = 0x00;
+
+  if (!sendCommandCheckAck(pn532_packetbuffer, 3))
+    return false;
+
+  return true;
+}
