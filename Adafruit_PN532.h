@@ -148,8 +148,9 @@ public:
   Adafruit_PN532(uint8_t reset, HardwareSerial *theSer); // Hardware UART
   bool begin(void);
 
-    void setI2CWakeupPin(int8_t pin);
-    bool shutDown(void);
+  void setI2CWakeupPin(int8_t pin);
+  bool shutDown(void);
+  bool Adafruit_PN532::turnOffRF();
 
   void reset(void);
   void wakeup(void);
