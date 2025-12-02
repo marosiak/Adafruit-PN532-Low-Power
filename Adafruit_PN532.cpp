@@ -195,9 +195,14 @@ void Adafruit_PN532::reset(void) {
 */
 /**************************************************************************/
 void Adafruit_PN532::wakeup(void) {
-  // interface specific wakeups - each one is unique!
+  if (_req != -1) {
+    digitalWrite(_req, LOW);
+    delay(10);
+    digitalWrite(_req, HIGH);
+    delay(10);
+  }
+
   if (spi_dev) {
-    // hold CS low for 2ms
     digitalWrite(_cs, LOW);
     delay(2);
   } else if (ser_dev) {
@@ -206,11 +211,9 @@ void Adafruit_PN532::wakeup(void) {
     delay(2);
   }
 
-  // PN532 will clock stretch I2C during SAMConfig as a "wakeup"
-
-  // need to config SAM to stay in Normal Mode
   SAMConfig();
 }
+
 
 /**************************************************************************/
 /*!
@@ -1817,26 +1820,6 @@ void Adafruit_PN532::writecommand(uint8_t *cmd, uint8_t cmdlen) {
       ser_dev->write(packet, 8 + cmdlen);
     }
   }
-}
-
-void Adafruit_PN532::wakeup(void) {
-  if (_req != -1) {
-    digitalWrite(_req, LOW);
-    delay(10);
-    digitalWrite(_req, HIGH);
-    delay(10);
-  }
-
-  if (spi_dev) {
-    digitalWrite(_cs, LOW);
-    delay(2);
-  } else if (ser_dev) {
-    uint8_t w[3] = {0x55, 0x00, 0x00};
-    ser_dev->write(w, 3);
-    delay(2);
-  }
-
-  SAMConfig();
 }
 
 
