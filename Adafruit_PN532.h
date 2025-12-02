@@ -150,7 +150,7 @@ public:
 
   void setI2CWakeupPin(int8_t pin);
   bool shutDown(void);
-  bool Adafruit_PN532::turnOffRF();
+  bool turnOffRF();
 
   void reset(void);
   void wakeup(void);
