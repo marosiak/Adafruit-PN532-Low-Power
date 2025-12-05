@@ -1830,16 +1830,11 @@ void Adafruit_PN532::setI2CWakeupPin(int8_t pin) {
 }
 
 bool Adafruit_PN532::shutDown(void) {
-  if (!turnOffRF()) {
-    return false;
-  }
-
   pn532_packetbuffer[0] = PN532_COMMAND_POWERDOWN;
-
-  pn532_packetbuffer[1] = 0xB0;
+  pn532_packetbuffer[1] = 0xB0; // Wakeup enabled by I2C/SPI
   pn532_packetbuffer[2] = 0x00;
 
-  if (!sendCommandCheckAck(pn532_packetbuffer, 3))
+  if (!sendCommandCheckAck(pn532_packetbuffer, 3, 30))
     return false;
 
   return true;
